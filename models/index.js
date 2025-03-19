@@ -6,16 +6,31 @@ const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
+// Use environment variable for database URL if available (for Render deployment)
+const databaseUrl = process.env.DATABASE_URL;
+
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+if (databaseUrl) {
+  // Connect using DATABASE_URL from Render
+  sequelize = new Sequelize(databaseUrl, {
+    dialect: 'postgres',
+    logging: false, // Disable logging for cleaner output
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false // Required for Render’s PostgreSQL
+      }
+    }
+  });
 } else {
+  // Local database configuration (for development)
+  const config = require(__dirname + '/../config/config.json')[env];
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
+// Load all models dynamically
 fs
   .readdirSync(__dirname)
   .filter(file => {
@@ -31,6 +46,7 @@ fs
     db[model.name] = model;
   });
 
+// Associate models if applicable
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
