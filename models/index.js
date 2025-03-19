@@ -12,22 +12,43 @@ const db = {};
 const databaseUrl = process.env.DATABASE_URL;
 
 let sequelize;
-if (databaseUrl) {
-  // Connect using DATABASE_URL from Render
-  sequelize = new Sequelize(databaseUrl, {
-    dialect: 'postgres',
-    logging: false, // Disable logging for cleaner output
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false // Required for Render’s PostgreSQL
+
+try {
+  if (databaseUrl) {
+    // Connect using DATABASE_URL from Render
+    console.log("🌍 Connecting to production database...");
+    sequelize = new Sequelize(databaseUrl, {
+      dialect: 'postgres',
+      logging: console.log, // Enable logging in production for debugging
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false // Required for Render’s PostgreSQL
+        }
       }
-    }
-  });
-} else {
-  // Local database configuration (for development)
-  const config = require(__dirname + '/../config/config.json')[env];
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+    });
+  } else {
+    // Local database configuration (for development)
+    console.log("🛠 Connecting to local database...");
+    const config = require(path.join(__dirname, '/../config/config.json'))[env];
+
+    sequelize = new Sequelize(config.database, config.username, config.password, {
+      ...config,
+      logging: false, // Disable query logging locally
+    });
+  }
+
+  // Test the connection
+  sequelize.authenticate()
+    .then(() => console.log("✅ Database connection successful"))
+    .catch(err => {
+      console.error("❌ Database connection error:", err);
+      process.exit(1); // Exit process if connection fails
+    });
+
+} catch (error) {
+  console.error("🚨 Sequelize initialization error:", error);
+  process.exit(1);
 }
 
 // Load all models dynamically
