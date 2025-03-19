@@ -1,0 +1,25 @@
+<%- include("../layouts/header.ejs") %>  <!-- Fix the path -->
+<h2>Job Listings</h2>
+
+<!-- <a href="/jobs/new" class="apply-btn">Create Job</a> -->
+
+<table>
+  <tr>
+    <th>Title</th><th>Company</th><th>Location</th><th>Job Type</th><th>Actions</th>
+  </tr>
+  <% jobs.forEach(job => { %>
+    <tr>
+      <td><%= job.title %></td>
+      <td><%= job.company %></td>
+      <td><%= job.location %></td>
+      <td><%= job.jobType %></td>
+      <td>
+        <a href="/jobs/<%= job.id %>/edit">Edit</a>
+        <form action="/jobs/<%= job.id %>/delete" method="POST">
+          <button type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+</table>
+<%- include("../layouts/footer.ejs") %>  <!-- Fix the path -->

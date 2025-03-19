@@ -1,0 +1,41 @@
+<%- include("../layouts/header.ejs") %>  <!-- Include header -->
+
+<h2>Edit Job Posting</h2>
+
+<form method="POST" action="/jobs/<%= job._id %>?_method=PUT">
+    <label for="title">Job Title:</label>
+    <input type="text" id="title" name="title" value="<%= job.title %>" required>
+
+    <label for="company">Company Name:</label>
+    <input type="text" id="company" name="company" value="<%= job.company %>" required>
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" value="<%= job.location %>" required>
+
+    <label for="jobType">Job Type:</label>
+    <select id="jobType" name="jobType" required>
+        <option value="Full-time" <%= job.jobType === 'Full-time' ? 'selected' : '' %>>Full-time</option>
+        <option value="Part-time" <%= job.jobType === 'Part-time' ? 'selected' : '' %>>Part-time</option>
+        <option value="Contract" <%= job.jobType === 'Contract' ? 'selected' : '' %>>Contract</option>
+        <option value="Internship" <%= job.jobType === 'Internship' ? 'selected' : '' %>>Internship</option>
+    </select>
+
+    <label for="salary">Salary Range:</label>
+    <input type="text" id="salary" name="salary" value="<%= job.salary %>" required>
+
+    <label for="description">Job Description:</label>
+    <textarea id="description" name="description" required><%= job.description %></textarea>
+
+    <label for="requirements">Requirements:</label>
+    <textarea id="requirements" name="requirements" required><%= job.requirements %></textarea>
+
+    <label for="responsibilities">Responsibilities:</label>
+    <textarea id="responsibilities" name="responsibilities" required><%= job.responsibilities %></textarea>
+
+    <label for="deadline">Application Deadline:</label>
+    <input type="date" id="deadline" name="deadline" value="<%= job.deadline.toISOString().split('T')[0] %>" required>
+
+    <button type="submit">Update Job</button>
+</form>
+
+<%- include("../layouts/footer.ejs") %>  <!-- Include footer -->

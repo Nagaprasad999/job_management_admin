@@ -1,0 +1,20 @@
+<%- include("../layouts/header.ejs") %>
+<h2>Create Job</h2>
+<form action="/jobs" method="POST">
+  <input type="text" name="title" placeholder="Job Title" required>
+  <input type="text" name="company" placeholder="Company Name" required>
+  <input type="text" name="location" placeholder="Location" required>
+  <select name="jobType">
+    <option>Full-time</option>
+    <option>Part-time</option>
+    <option>Contract</option>
+    <option>Internship</option>
+  </select>
+  <input type="text" name="salary" placeholder="Salary Range">
+  <textarea name="description" placeholder="Job Description"></textarea>
+  <textarea name="requirements" placeholder="Requirements"></textarea>
+  <textarea name="responsibilities" placeholder="Responsibilities"></textarea>
+  <input type="date" name="deadline">
+  <button type="submit">Create</button>
+</form>
+<%- include("../layouts/footer.ejs") %>
